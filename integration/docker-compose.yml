@@ -8,7 +8,7 @@ services:
     ports:
       - 8081:8080
     environment:
-      DB_URL: "jdbc:postgresql://localhost:5435/examples-with-spring-boot"
+      DB_URL: "jdbc:postgresql://database:5432/examples-with-spring-boot"
       DB_USERNAME: "username"
       DB_PASSWORD: "password"
 
@@ -19,4 +19,6 @@ services:
     ports:
       - 5435:5432
     environment:
+      POSTGRES_USER: "username"
       POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "examples-with-spring-boot"
