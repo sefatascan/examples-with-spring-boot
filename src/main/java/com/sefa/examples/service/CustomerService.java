@@ -14,7 +14,8 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
 
     protected Customer findById(String customerId) {
-        return customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException());
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 
     public CustomerDetailResponse findByIdWithDetail(String customerId) {
