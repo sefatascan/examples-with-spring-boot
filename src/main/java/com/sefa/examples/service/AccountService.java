@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +21,18 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final CustomerService customerService;
+    private final TransactionService transactionService;
 
-    protected Account findById(String accountId){
+    protected Account findById(String accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
     }
 
-    public AccountDetailResponse getAccountDetail(String accountId){
+    protected Account save(Account account) {
+        return accountRepository.save(account);
+    }
+
+    public AccountDetailResponse getAccountDetail(String accountId) {
         Account account = findById(accountId);
         return AccountDetailResponse.mapper(account);
     }
@@ -39,15 +45,17 @@ public class AccountService {
                 .customer(customer)
                 .build();
 
+        save(account);
+
         if (accountInıtialRequest.getInitialCredit().compareTo(BigDecimal.ONE) > 0) {
-            account.getTransactions().add(
-                    Transaction.builder()
-                            .amount(accountInıtialRequest.getInitialCredit())
-                            .transactionType(TransactionEnum.TRANSFER)
-                            .account(account)
-                            .build()
+            transactionService.save(Transaction.builder()
+                    .amount(accountInıtialRequest.getInitialCredit())
+                    .transactionType(TransactionEnum.TRANSFER)
+                    .account(account)
+                    .build()
             );
+
         }
-        return AccountInitialResponse.mapper(accountRepository.save(account));
+        return AccountInitialResponse.mapper(account);
     }
 }

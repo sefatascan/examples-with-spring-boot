@@ -1,14 +1,15 @@
 package com.sefa.examples.controller;
 
+import com.sefa.examples.dto.request.CustomerRequest;
+import com.sefa.examples.dto.response.CustomerBaseResponse;
 import com.sefa.examples.dto.response.CustomerDetailResponse;
 import com.sefa.examples.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/v1/customer")
+@RestController
+@RequestMapping("/v1/customer")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -17,5 +18,10 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ResponseEntity<CustomerDetailResponse> getCustomerDetail(@PathVariable("customerId") String customerId){
         return ResponseEntity.ok(customerService.findByIdWithDetail(customerId));
+    }
+
+    @PostMapping
+    public ResponseEntity<CustomerBaseResponse> createCustomer(@RequestBody CustomerRequest customerRequest){
+        return ResponseEntity.ok(customerService.createCustomer(customerRequest));
     }
 }
